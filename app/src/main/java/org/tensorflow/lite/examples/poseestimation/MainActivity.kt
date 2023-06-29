@@ -56,10 +56,10 @@ class MainActivity : AppCompatActivity() , TextToSpeech.OnInitListener{
      * 2 == MoveNet MultiPose model
      * 3 == PoseNet model
      **/
-    private var modelPos = 1
+    private var modelPos = 0
 
     /** Default device is CPU */
-    private var device = Device.CPU
+    private var device = Device.GPU
 
     private lateinit var tvScore: TextView
     private lateinit var tvFPS: TextView
@@ -315,7 +315,7 @@ class MainActivity : AppCompatActivity() , TextToSpeech.OnInitListener{
                 showPoseClassifier(true)
                 showDetectionScore(true)
                 showTracker(false)
-                MoveNet.create(this, device, ModelType.Lightning)
+                MoveNet.create(this, Device.GPU, ModelType.Lightning)
             }
             1 -> {
                 // MoveNet Thunder (SinglePose)

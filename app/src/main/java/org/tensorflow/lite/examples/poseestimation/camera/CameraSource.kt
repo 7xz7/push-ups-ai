@@ -326,7 +326,7 @@ class CameraSource(
         }
         if(::leftShoulder.isInitialized) {
             updateArmAngle();
-            updateBackAngle();
+            //updateBackAngle();
             inUpPosition();
             inDownPosition();
         }
@@ -432,7 +432,7 @@ class CameraSource(
 
     // Функция для определения находится ли человек в верхней позиции
     private fun inUpPosition() {
-        if (elbowAngle > 170 && elbowAngle < 200) {
+        if (elbowAngle > 160 && elbowAngle < 200) {
             if (downPosition) {
                 reps += 1
                 Log.d(ContentValues.TAG, reps.toString())
@@ -446,15 +446,17 @@ class CameraSource(
 
     // Функция для определения находится ли человек в нижней позиции
     fun inDownPosition() {
-        var elbowAboveNose = false
+/*        var elbowAboveNose = false
         if (nose.coordinate.y > leftElbow.coordinate.y) {
             elbowAboveNose = true
         } else {
 
             //println("Elbow is not above nose")
-        }
+        }*/
 
-        if (!highlightBack && elbowAboveNose && abs(elbowAngle) > 70 && abs(
+        if (//!highlightBack //&& elbowAboveNose
+            //&&
+                abs(elbowAngle) > 70 && abs(
                 elbowAngle
             ) < 100) {
             if (upPosition) {

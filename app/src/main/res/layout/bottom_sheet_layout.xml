@@ -17,6 +17,8 @@
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
     tools:showIn="@layout/activity_main">
 
+
+
     <ImageView
         android:id="@+id/bottom_sheet_arrow"
         android:layout_width="wrap_content"
@@ -34,6 +36,16 @@
         android:id="@+id/tvScore"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+    <Switch
+        android:id="@+id/switch1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="true"
+        android:textOff="Переключить камеру"
+        android:textOn="Переключить камеру"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
+
 
     <LinearLayout
         android:layout_width="match_parent"
