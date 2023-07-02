@@ -16,14 +16,11 @@ limitations under the License.
 
 package org.tensorflow.lite.examples.poseestimation
 
-import android.R.attr.text
 import android.content.ContentValues.TAG
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.os.Bundle
-import android.speech.tts.TextToSpeech
 import android.util.Log
 import org.tensorflow.lite.examples.poseestimation.data.BodyPart
 import org.tensorflow.lite.examples.poseestimation.data.KeyPoint
@@ -52,7 +49,6 @@ object VisualizationUtils {
     private lateinit var leftHip: KeyPoint
     private lateinit var leftKnee: KeyPoint
     private lateinit var nose: KeyPoint
-    private var tts: TextToSpeech? = null
 
     /** Radius of circle used to draw keypoints.  */
     private const val CIRCLE_RADIUS = 6f

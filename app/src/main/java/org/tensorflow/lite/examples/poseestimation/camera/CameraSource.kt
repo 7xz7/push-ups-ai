@@ -23,6 +23,7 @@ import android.graphics.Bitmap
 import android.graphics.ImageFormat
 import android.graphics.Matrix
 import android.graphics.Rect
+import android.hardware.camera2.CameraAccessException
 import android.hardware.camera2.CameraCaptureSession
 import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraDevice
@@ -45,13 +46,12 @@ import org.tensorflow.lite.examples.poseestimation.ml.PoseClassifier
 import org.tensorflow.lite.examples.poseestimation.ml.PoseDetector
 import org.tensorflow.lite.examples.poseestimation.ml.TrackerType
 import java.util.*
-import kotlin.coroutines.coroutineContext
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.atan2
-import kotlin.math.max
+
 
 class CameraSource(
     private val surfaceView: SurfaceView,
@@ -114,10 +114,28 @@ class CameraSource(
 
     /** [Handler] corresponding to [imageReaderThread] */
     private var imageReaderHandler: Handler? = null
-    private var cameraId: String = ""
+    private var cameraId: String =  "0"
+    private fun getFrontFacingCameraId(cManager: CameraManager): String? {
+        try {
+            var cameraId: String?
+            var cameraOrientation: Int
+            var characteristics: CameraCharacteristics
+            for (i in cManager.cameraIdList.indices) {
+                cameraId = cManager.cameraIdList[i]
+                characteristics = cManager.getCameraCharacteristics(cameraId)
+                cameraOrientation = characteristics.get(CameraCharacteristics.LENS_FACING)!!
+                if (cameraOrientation == CameraCharacteristics.LENS_FACING_FRONT) {
+                    return cameraId
+                }
+            }
+        } catch (e: CameraAccessException) {
+            e.printStackTrace()
+        }
+        return null
+    }
 
     suspend fun initCamera() {
-        camera = openCamera(cameraManager, cameraId)
+        camera = openCamera(cameraManager, getFrontFacingCameraId(cameraManager)!!)
         imageReader =
             ImageReader.newInstance(PREVIEW_WIDTH, PREVIEW_HEIGHT, ImageFormat.YUV_420_888, 3)
         imageReader?.setOnImageAvailableListener({ reader ->

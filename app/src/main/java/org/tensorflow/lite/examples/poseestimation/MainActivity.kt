@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() , TextToSpeech.OnInitListener{
      * 2 == MoveNet MultiPose model
      * 3 == PoseNet model
      **/
-    private var modelPos = 0
+    private var modelPos = 1
 
     /** Default device is CPU */
     private var device = Device.GPU
@@ -310,21 +310,21 @@ class MainActivity : AppCompatActivity() , TextToSpeech.OnInitListener{
         // For MoveNet MultiPose, hide score and disable pose classifier as the model returns
         // multiple Person instances.
         val poseDetector = when (modelPos) {
-            0 -> {
+/*            0 -> {
                 // MoveNet Lightning (SinglePose)
                 showPoseClassifier(true)
                 showDetectionScore(true)
                 showTracker(false)
                 MoveNet.create(this, Device.GPU, ModelType.Lightning)
-            }
+            }*/
             1 -> {
                 // MoveNet Thunder (SinglePose)
                 showPoseClassifier(true)
                 showDetectionScore(true)
                 showTracker(false)
-                MoveNet.create(this, device, ModelType.Thunder)
+                MoveNet.create(this, Device.GPU, ModelType.Thunder)
             }
-            2 -> {
+/*            2 -> {
                 // MoveNet (Lightning) MultiPose
                 showPoseClassifier(false)
                 showDetectionScore(false)
@@ -345,7 +345,7 @@ class MainActivity : AppCompatActivity() , TextToSpeech.OnInitListener{
                 showDetectionScore(true)
                 showTracker(false)
                 PoseNet.create(this, device)
-            }
+            }*/
             else -> {
                 null
             }

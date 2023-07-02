@@ -58,7 +58,7 @@ class MoveNet(private val interpreter: Interpreter, private var gpuDelegate: Gpu
         fun create(context: Context, device: Device, modelType: ModelType): MoveNet {
             val options = Interpreter.Options()
             var gpuDelegate: GpuDelegate? = null
-            options.setNumThreads(CPU_NUM_THREADS)
+            options.numThreads = CPU_NUM_THREADS
             when (device) {
                 Device.CPU -> {
                 }
@@ -66,7 +66,7 @@ class MoveNet(private val interpreter: Interpreter, private var gpuDelegate: Gpu
                     gpuDelegate = GpuDelegate()
                     options.addDelegate(gpuDelegate)
                 }
-                Device.NNAPI -> options.setUseNNAPI(true)
+                Device.NNAPI -> options.useNNAPI = true
             }
             return MoveNet(
                 Interpreter(
