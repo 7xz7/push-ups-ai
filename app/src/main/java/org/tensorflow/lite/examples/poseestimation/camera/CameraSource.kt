@@ -66,9 +66,14 @@ class CameraSource(
         private const val MIN_CONFIDENCE = .2f
         private const val TAG = "Camera Source"
     }
+
+
     private lateinit var leftWrist: KeyPoint
     private lateinit var leftShoulder: KeyPoint
     private lateinit var leftElbow: KeyPoint
+    private lateinit var rightWrist: KeyPoint
+    private lateinit var rightShoulder: KeyPoint
+    private lateinit var rightElbow: KeyPoint
     private lateinit var leftHip: KeyPoint
     private lateinit var leftKnee: KeyPoint
     private lateinit var nose: KeyPoint
@@ -125,6 +130,7 @@ class CameraSource(
                 characteristics = cManager.getCameraCharacteristics(cameraId)
                 cameraOrientation = characteristics.get(CameraCharacteristics.LENS_FACING)!!
                 if (cameraOrientation == CameraCharacteristics.LENS_FACING_FRONT) {
+                //if (cameraOrientation == CameraCharacteristics.LENS_FACING_BACK) {
                     return cameraId
                 }
             }
@@ -153,6 +159,7 @@ class CameraSource(
                 // Create rotated version for portrait display
                 val rotateMatrix = Matrix()
                 rotateMatrix.postRotate(90.0f)
+                rotateMatrix.preScale(-1.0f, 1.0f)
 
                 val rotatedBitmap = Bitmap.createBitmap(
                     imageBitmap, 0, 0, PREVIEW_WIDTH, PREVIEW_HEIGHT,
@@ -334,6 +341,12 @@ class CameraSource(
                     leftShoulder = point
                 if (point.bodyPart == BodyPart.LEFT_ELBOW)
                     leftElbow = point
+                if (point.bodyPart == BodyPart.RIGHT_WRIST)
+                    rightWrist = point
+                if (point.bodyPart == BodyPart.RIGHT_SHOULDER)
+                    rightShoulder = point
+                if (point.bodyPart == BodyPart.RIGHT_ELBOW)
+                    rightElbow = point
                 if  (point.bodyPart == BodyPart.LEFT_HIP)
                     leftHip = point
                 if (point.bodyPart == BodyPart.LEFT_KNEE)
@@ -401,21 +414,30 @@ class CameraSource(
 
     // Функция для обновления угла локтя
     private fun updateArmAngle() {
-
-        val angle = (
-                atan2(
-                    leftWrist.coordinate.y - leftElbow.coordinate.y,
-                    leftWrist.coordinate.x - leftElbow.coordinate.x
-                ) - atan2(
-                    leftShoulder.coordinate.y - leftElbow.coordinate.y,
-                    leftShoulder.coordinate.x - leftElbow.coordinate.x
-                )
-                ) * (180 / PI)
-
         if (leftWrist.score > 0.3 && leftElbow.score > 0.3 && leftShoulder.score > 0.3) {
+            val angle = (
+                    atan2(
+                        leftWrist.coordinate.y - leftElbow.coordinate.y,
+                        leftWrist.coordinate.x - leftElbow.coordinate.x
+                    ) - atan2(
+                        leftShoulder.coordinate.y - leftElbow.coordinate.y,
+                        leftShoulder.coordinate.x - leftElbow.coordinate.x
+                    )
+                    ) * (180 / PI)
             elbowAngle = angle
         } else {
-            //Log.d(TAG, "Cannot see elbow")
+            if (rightWrist.score > 0.3 && rightElbow.score > 0.3 && rightShoulder.score > 0.3) {
+                val angle = (
+                        atan2(
+                            rightWrist.coordinate.y - rightElbow.coordinate.y,
+                            rightWrist.coordinate.x - rightElbow.coordinate.x
+                        ) - atan2(
+                            rightShoulder.coordinate.y - rightElbow.coordinate.y,
+                            rightShoulder.coordinate.x - rightElbow.coordinate.x
+                        )
+                        ) * (180 / PI)
+                elbowAngle = angle
+            }
         }
     }
 
@@ -450,7 +472,7 @@ class CameraSource(
 
     // Функция для определения находится ли человек в верхней позиции
     private fun inUpPosition() {
-        if (elbowAngle > 160 && elbowAngle < 200) {
+        if (abs(elbowAngle) > 160 && abs(elbowAngle) < 210) {
             if (downPosition) {
                 reps += 1
                 Log.d(ContentValues.TAG, reps.toString())
@@ -476,7 +498,7 @@ class CameraSource(
             //&&
                 abs(elbowAngle) > 70 && abs(
                 elbowAngle
-            ) < 100) {
+            ) < 110) {
             if (upPosition) {
                 listener?.onTTS("Вверх")
                 // замените эту строку кодом для произнесения слова "Up"

@@ -82,7 +82,7 @@ class MoveNet(private val interpreter: Interpreter, private var gpuDelegate: Gpu
 
         // default to lightning.
         fun create(context: Context, device: Device): MoveNet =
-            create(context, device, ModelType.Lightning)
+            create(context, device, ModelType.Thunder)
     }
 
     private var cropRegion: RectF? = null
